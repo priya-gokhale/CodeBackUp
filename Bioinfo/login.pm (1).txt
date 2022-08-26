@@ -1,0 +1,80 @@
+
+
+package example;
+
+use strict;
+use warnings;
+use base 'CGI::Application';
+use CGI::Application::Plugin::DBH(qw/dbh_config dbh/);
+
+sub setup{
+    my $self = shift;
+    $self->start_mode('login');
+    $self->error_mode('error');
+    $self->mode_param('newState');
+    $self->run_modes(['login', 'authentication', 'showResult']);
+}
+
+sub login{
+
+    my $self = shift;
+
+    my $HTMLPage = $self->load_tmpl('login.tmpl');
+    $HTMLPage->param('showSection_login' => 1);
+    return $HTMLPage->output;
+}
+
+
+sub authentication{
+    my $self = shift;
+
+    my $query       = $self->query();
+    my $user        = $query->param('user');
+    my $password    = $query->param('password');
+
+    my $HTMLPage = $self->load_tmpl('login.tmpl');
+    if (isUserAuthenticated($user, $password)){
+        $HTMLPage->param('showSection_welcomePage' => 1);
+        $HTMLPage->param('user' => $user);
+    }
+    else{
+        $HTMLPage->param('showSection_loginFailed' => 1);
+    }
+    return $HTMLPage->output;
+}
+
+sub isUserAuthenticated{
+
+    my ($user, $password) = @_;
+
+    return ($user =~ /^max$/io && $password =~ /max/o ? 1 : 0);
+}
+
+sub showResult{
+    my $self = shift;
+    my $query    = $self->query();
+    
+    # open database connection
+    $self->dbh_config(
+    $CFG{'DB_DSN'},    # "dbi:mysql:database=webapp",
+    $CFG{'DB_USER'},   # "webadmin",
+    $CFG{'DB_PASS'},   # ""
+    );
+	
+    # Get the data from database here
+    $sth = $self->dbh->prepare("select AppliedTo, Status from table Decision where userno = (select userno from table Students where Username = $user)" );
+    
+    my $number1    = $query->param('number1');
+    my $number2    = $query->param('number2');
+
+    my $HTMLPage = $self->load_tmpl('login.tmpl');
+    $HTMLPage->param('showSection_result' => 1);
+
+   
+    return $HTMLPage->output;
+}
+
+
+
+
+

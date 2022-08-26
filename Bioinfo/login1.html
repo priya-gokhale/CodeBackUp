@@ -1,0 +1,36 @@
+<!DOCTYPE html
+
+<head><title>LOGIN</title></head>
+<body>
+
+<TMPL_IF NAME="showSection_login">
+<form method="post" action="login.cgi">
+    <p><input type="hidden" name="newState" value="authentication"/></p>
+    <p>user: <input type="text" name="user"/></p>
+    <p>password: <input type="password" name="password"/></p>
+    <p><input type="submit" name="action" value="Login"/></p>
+</form>
+</TMPL_IF>
+
+
+<TMPL_IF NAME="showSection_welcomePage">
+<h3>Login succeeded: welcome <TMPL_VAR NAME="user">!</h3>
+<p>You can view status of you admission</p>
+<form method="post" action="login.cgi">
+    <p><input type="hidden" name="newState" value="showResult"/></p>
+    
+</form>
+</TMPL_IF>
+
+<TMPL_IF NAME="showSection_result">
+<!-- this is the page section containing the operation result -->
+
+</TMPL_IF>
+
+<TMPL_IF NAME="showSection_loginFailed">
+<!-- this is the page section shown on login failure -->
+<h3>Login failed: Invalid username or password</h3>
+</TMPL_IF>
+
+</body>
+</html>
