@@ -1,0 +1,17 @@
+#!/usr/bin/perl -wq
+use strict;
+use lib '/var/www/cgi-bin/WebApp/libs';
+use MyLib::Simple;
+
+my $webapp = MyLib::Simple->new(
+  PARAMS => {
+  cfg_file => ['dbi.conf'],
+  format => 'equal',
+  },
+);
+
+use login;
+my $login = login->new();
+$login->run;
+
+
